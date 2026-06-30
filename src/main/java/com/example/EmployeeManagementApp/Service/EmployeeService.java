@@ -3,7 +3,10 @@ package com.example.EmployeeManagementApp.Service;
 import com.example.EmployeeManagementApp.Dto.EmployeeRequest;
 import com.example.EmployeeManagementApp.Dto.EmployeeResponse;
 import com.example.EmployeeManagementApp.Entity.Employee;
+import com.example.EmployeeManagementApp.Exception.EmployeeAlreadyExistsException;
+import com.example.EmployeeManagementApp.Exception.EmployeeNotFoundException;
 import com.example.EmployeeManagementApp.Repository.EmployeeRepository;
+import com.example.EmployeeManagementApp.Util.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,12 @@ import java.util.List;
 public class EmployeeService {
     private static final Logger logger= LoggerFactory.getLogger(EmployeeService.class);
     @Autowired
+    private RequestContext requestContext;
+    @Autowired
     private EmployeeRepository employeeRepository;
     public List<Employee> getAllEmployees()
     {
+        //System.out.println("Current Request Id :"+requestContext.getRequestId());
         return employeeRepository.findAll();
     }
 
@@ -30,6 +36,10 @@ public class EmployeeService {
 
     public EmployeeResponse save(EmployeeRequest request)
     {
+        if(employeeRepository.findByEmail(request.getEmail()).isPresent())
+        {
+            throw new EmployeeAlreadyExistsException("Employee already exists with email : "+request.getEmail());
+        }
         logger.info("Creating an Employee : {}",request.getName());
         Employee employee=new Employee();
         employee.setName(request.getName());
@@ -50,12 +60,12 @@ public class EmployeeService {
 
     public Employee getEmployeeById(Long id)
     {
-        return employeeRepository.findById(id).orElseThrow(()->new RuntimeException("Employee Not Found"));
+        return employeeRepository.findById(id).orElseThrow(()->new EmployeeNotFoundException("Employee with Id "+id+" not found"));
     }
 
     public Employee updateEmployee(Long id,Employee updatedEmployee)
     {
-        Employee employee=employeeRepository.findById(id).orElseThrow(()->new RuntimeException("Employee Not Found"));
+        Employee employee=employeeRepository.findById(id).orElseThrow(()->new EmployeeNotFoundException("Employee with Id "+id+" not found"));
         employee.setName(updatedEmployee.getName());
         employee.setEmail(updatedEmployee.getEmail());
         employee.setSalary(updatedEmployee.getSalary());
@@ -67,5 +77,10 @@ public class EmployeeService {
     public void deleteEmployee(Long id)
     {
         employeeRepository.deleteById(id);
+    }
+
+    public List<Employee> getEmployeeByDesignation(String designation)
+    {
+        return employeeRepository.findByDesignation(designation);
     }
 }
