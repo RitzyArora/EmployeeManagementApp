@@ -1,5 +1,7 @@
 package com.example.EmployeeManagementApp.Dto;
 
+import com.example.EmployeeManagementApp.Entity.Address;
+
 public class EmployeeResponse {
 
     Long id;
@@ -7,19 +9,29 @@ public class EmployeeResponse {
         private String email;
         private Double salary;
         private String designation;
+        private Address address;
 
         public EmployeeResponse() {
         }
 
-        public EmployeeResponse(Long id,String name, String email, Double salary, String designation) {
+        public EmployeeResponse(Long id,String name, String email, Double salary, String designation,Address address) {
             this.id=id;
             this.name = name;
             this.email = email;
             this.salary = salary;
             this.designation = designation;
+            this.address=address;
         }
 
-        public String getName() {
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getName() {
             return name;
         }
 

@@ -1,5 +1,6 @@
 package com.example.EmployeeManagementApp.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.context.annotation.Scope;
 
@@ -14,6 +15,11 @@ public class Employee {
     private Double salary;
     private String designation;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="address_id")
+    @JsonManagedReference
+    private Address address;
+
     public Employee(String name, String email, Double salary, String designation) {
         this.name = name;
         this.email = email;
@@ -23,6 +29,14 @@ public class Employee {
 
     public Employee() {
 
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Long getEmployeeId() {

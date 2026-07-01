@@ -1,7 +1,9 @@
 package com.example.EmployeeManagementApp.Service;
 
+import com.example.EmployeeManagementApp.Dto.AddressRequest;
 import com.example.EmployeeManagementApp.Dto.EmployeeRequest;
 import com.example.EmployeeManagementApp.Dto.EmployeeResponse;
+import com.example.EmployeeManagementApp.Entity.Address;
 import com.example.EmployeeManagementApp.Entity.Employee;
 import com.example.EmployeeManagementApp.Exception.EmployeeAlreadyExistsException;
 import com.example.EmployeeManagementApp.Exception.EmployeeNotFoundException;
@@ -46,6 +48,18 @@ public class EmployeeService {
         employee.setSalary(request.getSalary());
         employee.setDesignation(request.getDesignation());
         employee.setEmail(request.getEmail());
+        AddressRequest addressRequest=request.getAddress();
+        if(addressRequest!=null)
+        {
+            Address address=new Address();
+            address.setCity(addressRequest.getCity());
+            address.setState(addressRequest.getState());
+            address.setCountry(addressRequest.getCountry());
+            address.setPincode(addressRequest.getPincode());
+            employee.setAddress(address);
+            address.setEmployee(employee);
+        }
+        logger.info("Address={}",request.getAddress());
         Employee savedEmployee=employeeRepository.save(employee);
         logger.info("Employee Created Successfully");
         return new EmployeeResponse(
@@ -53,7 +67,8 @@ public class EmployeeService {
                 savedEmployee.getName(),
                 savedEmployee.getEmail(),
                 savedEmployee.getSalary(),
-                savedEmployee.getDesignation()
+                savedEmployee.getDesignation(),
+                savedEmployee.getAddress()
         );
 
     }

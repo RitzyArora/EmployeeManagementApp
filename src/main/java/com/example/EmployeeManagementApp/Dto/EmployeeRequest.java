@@ -1,4 +1,5 @@
 package com.example.EmployeeManagementApp.Dto;
+import com.example.EmployeeManagementApp.Entity.Address;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -14,6 +15,8 @@ public class EmployeeRequest {
     @NotBlank(message="Designation cannot be empty")
     private String designation;
 
+    private AddressRequest address;
+
     public EmployeeRequest() {
     }
 
@@ -22,6 +25,14 @@ public class EmployeeRequest {
         this.email = email;
         this.salary = salary;
         this.designation = designation;
+    }
+
+    public AddressRequest getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressRequest address) {
+        this.address = address;
     }
 
     public String getName() {
